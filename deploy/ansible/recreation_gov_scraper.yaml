@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: recreation-gov-scraper
+  namespace: scrapers
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+      - name: recreation-gov-scraper
+        image: docker.pkg.github.com/ai2160/gfy-scraper/gfy-scraper:latest
+        env:
+          - name: MG_KEY
+            valueFrom:
+              secretKeyRef:
+                name: mg-secrets
+                key: MG_KEY
+          - name: MG_DOMAIN
+            valueFrom:
+              secretKeyRef:
+                name: mg-secrets
+                key: MG_DOMAIN
+        command: ["python"]
+        args: ["camping.py", "{{ camping_args }}"]
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: gitpackage
