@@ -29,4 +29,6 @@ USER app
 
 RUN pip install --user -r requirements.txt
 
+WORKDIR $APP_HOME
+
 CMD tail -f /dev/null

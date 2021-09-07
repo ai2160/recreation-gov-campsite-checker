@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: recreation-gov-scraper
-        image: docker.pkg.github.com/ai2160/gfy-scraper/gfy-scraper:latest
+        image: ghcr.io/ai2160/recreation-gov-campsite-checker:latest
         env:
           - name: MG_KEY
             valueFrom:
@@ -22,8 +22,8 @@ spec:
               secretKeyRef:
                 name: mg-secrets
                 key: MG_DOMAIN
-        command: ["python"]
-        args: ["camping.py", "{{ camping_args }}"]
+        command: ["python3"]
+        args: ["camping.py --start-date {{ start_date }} --end-date {{ end_date }} {{ parks }}"]
       restartPolicy: Never
       imagePullSecrets:
         - name: gitpackage

@@ -1,6 +1,10 @@
 - hosts: localhost
+  vars:
+    start_date: "{{ start_date }}"
+    end_date: " {{ end_date }}"
+    parks: " {{ parks }}"
   tasks:
     - name: Start scraper
       k8s:
         state: present
-        definition: "{{ lookup('file', 'recreation_gov_scraper.yaml') }}"
+        definition: "{{ lookup('template', 'recreation_gov_scraper.yaml') }}"
