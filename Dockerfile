@@ -23,6 +23,7 @@ ADD . $APP_HOME
 
 # Chown all the files to the app user.
 RUN chown -R app:app $HOME
+RUN chmod +x $APP_HOME/camping.py
 
 # Change to the app user.
 USER app
@@ -30,5 +31,3 @@ USER app
 RUN pip install --user -r requirements.txt
 
 WORKDIR $APP_HOME
-
-CMD tail -f /dev/null

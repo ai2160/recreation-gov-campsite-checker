@@ -22,8 +22,8 @@ spec:
               secretKeyRef:
                 name: mg-secrets
                 key: MG_DOMAIN
-        command: ["python3"]
-        args: ["camping.py --start-date {{ start_date }} --end-date {{ end_date }} {{ parks }}"]
+        command: ["camping.py"]
+        args: ["--start-date {{ start_date }} --end-date {{ end_date }} {{ parks }}"]
       restartPolicy: Never
       imagePullSecrets:
         - name: gitpackage
