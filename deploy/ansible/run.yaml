@@ -4,6 +4,13 @@
     end_date: " {{ end_date }}"
     parks: " {{ parks }}"
   tasks:
+    - name: Stop previous scraper
+      k8s:
+        api_version: v1
+        kind: Job
+        namespace: scrapers
+        name: recreation-gov-scraper
+        state: absent      
     - name: Start scraper
       k8s:
         state: present
