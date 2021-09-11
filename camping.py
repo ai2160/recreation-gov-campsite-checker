@@ -38,12 +38,12 @@ ua = UserAgent()
 ua.update()
 headers = {"User-Agent": ua.random}
 
-def send_email(json):
+def send_email(availabilities):
     response = requests.post(MG_URL, auth=('api', MG_KEY), data={
         'from': '"Recreation Gov Scraper" <rec.gov@westerncamper.photography>',
         'to': 'abhilash.i@gmail.com',
         'subject': "Found campsites",
-        'html': json
+        'text': json.dumps(availabilities)
     })
 
 
@@ -352,8 +352,9 @@ if __name__ == "__main__":
     parks = args.parks or [p.strip() for p in sys.stdin]
 
     while True:
-        rtv, json = get_park_availabilities(parks)
+        rtv, availabilities = get_park_availabilities(parks)
         if rtv:
-            send_email(json)
+            send_email(availabilities)
             break
+        print("Didn't find campsites. Trying again in 400 seconds.")
         time.sleep(400)
