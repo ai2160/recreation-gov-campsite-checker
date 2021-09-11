@@ -10,7 +10,11 @@
         kind: Job
         namespace: scrapers
         name: recreation-gov-scraper
-        state: absent      
+        state: absent
+    - name: Sleep for 10 seconds and continue with play
+      wait_for:
+        timeout: 10
+      delegate_to: localhost
     - name: Start scraper
       k8s:
         state: present
