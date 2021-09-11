@@ -1,5 +1,11 @@
 # Campsite Availability Scraping
 
+## Example usage
+
+```
+ansible-playbook run.yaml --ask-vault-pass --extra-vars "start_date=2021-11-28 end_date=2021-11-28 parks=232496"
+```
+
 **This has been updated to work with the new recreation.gov site and API!!!**
 
 This script scrapes the https://recreation.gov website for campsite availabilities.

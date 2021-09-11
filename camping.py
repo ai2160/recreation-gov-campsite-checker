@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-
+import os
+import time
 import argparse
 import json
 import logging
@@ -29,7 +30,21 @@ ISO_DATE_FORMAT_RESPONSE = "%Y-%m-%dT00:00:00Z"
 SUCCESS_EMOJI = "🏕"
 FAILURE_EMOJI = "❌"
 
-headers = {"User-Agent": UserAgent().random}
+MG_KEY = os.environ['MG_KEY']
+MG_DOMAIN = os.environ['MG_DOMAIN']
+MG_URL = 'https://api.mailgun.net/v3/{}/messages'.format(MG_DOMAIN)
+
+ua = UserAgent()
+ua.update()
+headers = {"User-Agent": ua.random}
+
+def send_email(json):
+    response = requests.post(MG_URL, auth=('api', MG_KEY), data={
+        'from': '"Recreation Gov Scraper" <rec.gov@westerncamper.photography>',
+        'to': 'abhilash.i@gmail.com',
+        'subject': "Found campsites",
+        'html': json
+    })
 
 
 def format_date(date_object, format_string=ISO_DATE_FORMAT_REQUEST):
@@ -242,8 +257,7 @@ def output_human_output(parks):
     print("\n".join(out))
     return availabilities
 
-
-def output_json_output(parks):
+def get_park_availabilities(parks):
     park_to_availabilities = {}
     availabilities = False
     for park_id in parks:
@@ -253,10 +267,13 @@ def output_json_output(parks):
         if current:
             availabilities = True
             park_to_availabilities[park_id] = availabilities_filtered
+    return availabilities, park_to_availabilities
 
-    print(json.dumps(park_to_availabilities))
+def output_json_output(parks):
+    rtv, response = get_park_availabilities(parks)
+    print(json.dumps(response))
 
-    return availabilities
+    return rtv
 
 
 def main(parks, json_output=False):
@@ -334,10 +351,9 @@ if __name__ == "__main__":
 
     parks = args.parks or [p.strip() for p in sys.stdin]
 
-    try:
-        code = 0 if main(parks, json_output=args.json_output) else 1
-        sys.exit(code)
-    except Exception:
-        print("Something went wrong")
-        LOG.exception("Something went wrong")
-        raise
+    while True:
+        rtv, json = get_park_availabilities(parks)
+        if rtv:
+            send_email(json)
+            break
+        time.sleep(400)
