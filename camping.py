@@ -34,7 +34,7 @@ MG_KEY = os.environ['MG_KEY']
 MG_DOMAIN = os.environ['MG_DOMAIN']
 MG_URL = 'https://api.mailgun.net/v3/{}/messages'.format(MG_DOMAIN)
 
-ua = UserAgent(cache=True)
+ua = UserAgent()
 ua.update()
 headers = {"User-Agent": ua.random}
 
