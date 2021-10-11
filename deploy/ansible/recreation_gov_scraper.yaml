@@ -3,6 +3,8 @@ kind: Job
 metadata:
   name: recreation-gov-scraper
   namespace: scrapers
+  labels:
+    log: camping
 spec:
   completions: 1
   parallelism: 1
