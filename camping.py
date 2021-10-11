@@ -34,7 +34,7 @@ MG_KEY = os.environ['MG_KEY']
 MG_DOMAIN = os.environ['MG_DOMAIN']
 MG_URL = 'https://api.mailgun.net/v3/{}/messages'.format(MG_DOMAIN)
 
-ua = UserAgent()
+ua = UserAgent(cache=True)
 ua.update()
 headers = {"User-Agent": ua.random}
 
@@ -246,15 +246,15 @@ def output_human_output(parks):
         )
 
     if availabilities:
-        print(
+        LOG.info(
             "There are campsites available from {} to {}!!!".format(
                 args.start_date.strftime(INPUT_DATE_FORMAT),
                 args.end_date.strftime(INPUT_DATE_FORMAT),
             )
         )
     else:
-        print("There are no campsites available :(")
-    print("\n".join(out))
+        LOG.info("There are no campsites available :(")
+    LOG.info("\n".join(out))
     return availabilities
 
 def get_park_availabilities(parks):
@@ -271,7 +271,7 @@ def get_park_availabilities(parks):
 
 def output_json_output(parks):
     rtv, response = get_park_availabilities(parks)
-    print(json.dumps(response))
+    LOG.info(json.dumps(response))
 
     return rtv
 
@@ -348,6 +348,8 @@ if __name__ == "__main__":
 
     if args.debug:
         LOG.setLevel(logging.DEBUG)
+    else:
+        LOG.setLevel(logging.INFO)
 
     parks = args.parks or [p.strip() for p in sys.stdin]
 
@@ -356,5 +358,5 @@ if __name__ == "__main__":
         if rtv:
             send_email(availabilities)
             break
-        print("Didn't find campsites. Trying again in 400 seconds.")
+        LOG.info("Didn't find campsites. Trying again in 400 seconds.")
         time.sleep(400)
